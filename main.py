@@ -33,6 +33,8 @@ spieler2pos_y = screen_height/2
 
 spielerbewegung_y = 5
 
+spielfigur_1_bewegung = 0
+
 #Ball
 BALL_DURCHMESSER = 20
 
@@ -56,21 +58,37 @@ while spielaktiv:
             # Taste für Spieler 1
             if event.key == pygame.K_UP:
                 print("Spieler hat Pfeiltaste runter gedrückt")
-                spieler1pos_y -= 6
+                spielfigur_1_bewegung = -6
             elif event.key == pygame.K_DOWN:
                 print("Spieler hat Pfeiltaste runter gedrückt")
-                spieler1pos_y += 6
+                spielfigur_1_bewegung = 6
+
+        if event.type == pygame.KEYUP:
+            print("Spieler hat Taste losgelassen")
+
+            # Tasten für Spieler 1
+            if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                print("Spieler 1 stoppt bewegung")
+                spielfigur_1_bewegung = 0
+
+    # Spiellogik
+    if spielfigur_1_bewegung != 0:
+        spieler1pos_y += spielfigur_1_bewegung
 
     screen.fill(SCHWARZ)
 
+    #Draw Ball
     pygame.draw.ellipse(screen, WEISS, [ballpos_x, ballpos_y, BALL_DURCHMESSER, BALL_DURCHMESSER])
 
-    ballpos_x += ball_bewegung_x
-    ballpos_y += ball_bewegung_y
-
+    #Draw Players
     pygame.draw.rect(screen, WEISS,[spieler1pos_x, spieler1pos_y, SPIELER_DURCHMESSER_X, SPIELER_DURCHMESSER_Y ])
     pygame.draw.rect(screen, WEISS,[spieler2pos_x, spieler2pos_y, SPIELER_DURCHMESSER_X, SPIELER_DURCHMESSER_Y])
 
+    #Balllogic
+    ballpos_x += ball_bewegung_x
+    ballpos_y += ball_bewegung_y
+
+    
     if ballpos_y > screen_height - BALL_DURCHMESSER or ballpos_y < 0:
         ball_bewegung_y = ball_bewegung_y * -1
 
