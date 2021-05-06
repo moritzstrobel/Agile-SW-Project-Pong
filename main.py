@@ -1,4 +1,5 @@
 import pygame, math
+from win32api import GetSystemMetrics
 
 pygame.init()
 
@@ -17,8 +18,8 @@ spielaktiv = True
 clock = pygame.time.Clock()
 
 #Screen
-screen_width=1920
-screen_height=1080
+screen_width=GetSystemMetrics(0)
+screen_height=GetSystemMetrics(1)
 screen=pygame.display.set_mode([screen_width, screen_height])
 
 #Spieler
