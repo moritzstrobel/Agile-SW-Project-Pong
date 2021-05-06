@@ -2,32 +2,45 @@ import pygame, math
 
 pygame.init()
 
+#Farben [idk warum hier?]
 ORANGE  = ( 255, 140, 0)
 ROT     = ( 255, 0, 0)
 GRUEN   = ( 0, 255, 0)
 SCHWARZ = ( 0, 0, 0)
 WEISS   = ( 255, 255, 255)
-BALL_DURCHMESSER = 20
-SPIELER_DURCHMESSER_Y = 50
-SPIELER_DURCHMESSER_X = 10
 
+#Randomstuff
+pygame.display.set_caption("Pong")
+
+spielaktiv = True
+
+clock = pygame.time.Clock()
+
+#Screen
 screen_width=1920
 screen_height=1080
 screen=pygame.display.set_mode([screen_width, screen_height])
-pygame.display.set_caption("Pong")
-spielaktiv = True
-clock = pygame.time.Clock()
+
+#Spieler
+SPIELER_DURCHMESSER_Y = 50
+SPIELER_DURCHMESSER_X = 10
+
 spieler1pos_x = 20
 spieler1pos_y = screen_height/2
+
 spieler2pos_x = screen_width-20-SPIELER_DURCHMESSER_X
 spieler2pos_y = screen_height/2
-# spielerbewegung_x = 5
+
 spielerbewegung_y = 5
+
+#Ball
+BALL_DURCHMESSER = 20
+
 ballpos_x = 10
 ballpos_y = screen_height/2
 
-bewegung_x = 4
-bewegung_y = 4
+ball_bewegung_x = 4
+ball_bewegung_y = 4
 
 while spielaktiv:
     for event in pygame.event.get():
@@ -35,20 +48,34 @@ while spielaktiv:
             spielaktiv = False
         if event.type == pygame.KEYDOWN:
             print("Spieler hat Taste gedrückt")
-            if event.type == pygame.K_ESCAPE:
-               spielaktiv = False 
+
+            if event.key == pygame.K_ESCAPE:
+                print("Spieler hat ESC runter gedrückt")
+                spielaktiv = False
+                
+            # Taste für Spieler 1
+            if event.key == pygame.K_UP:
+                print("Spieler hat Pfeiltaste runter gedrückt")
+                spieler1pos_y -= 6
+            elif event.key == pygame.K_DOWN:
+                print("Spieler hat Pfeiltaste runter gedrückt")
+                spieler1pos_y += 6
+
     screen.fill(SCHWARZ)
+
     pygame.draw.ellipse(screen, WEISS, [ballpos_x, ballpos_y, BALL_DURCHMESSER, BALL_DURCHMESSER])
-    ballpos_x += bewegung_x
-    ballpos_y += bewegung_y
+
+    ballpos_x += ball_bewegung_x
+    ballpos_y += ball_bewegung_y
+
     pygame.draw.rect(screen, WEISS,[spieler1pos_x, spieler1pos_y, SPIELER_DURCHMESSER_X, SPIELER_DURCHMESSER_Y ])
     pygame.draw.rect(screen, WEISS,[spieler2pos_x, spieler2pos_y, SPIELER_DURCHMESSER_X, SPIELER_DURCHMESSER_Y])
 
     if ballpos_y > screen_height - BALL_DURCHMESSER or ballpos_y < 0:
-        bewegung_y = bewegung_y * -1
+        ball_bewegung_y = ball_bewegung_y * -1
 
     if ballpos_x > screen_width - BALL_DURCHMESSER or ballpos_x < 0:
-        bewegung_x = bewegung_x * -1
+        ball_bewegung_x = ball_bewegung_x * -1
     
 
     pygame.display.flip()

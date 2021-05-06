@@ -68,3 +68,8 @@ while spielaktiv:
 
 pygame.quit()
 quit()
+
+
+
+
+#lol
