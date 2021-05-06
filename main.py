@@ -1,8 +1,9 @@
 import pygame, math
 from win32api import GetSystemMetrics
 
-
+#Setup
 pygame.init()
+clock = pygame.time.Clock()
 
 #Farben [idk warum hier?]
 ORANGE  = ( 255, 140, 0)
@@ -13,38 +14,42 @@ WEISS   = ( 255, 255, 255)
 
 #Randomstuff
 pygame.display.set_caption("Pong")
-
 spielaktiv = True
 
-clock = pygame.time.Clock()
 
 #Screen
 screen_width=GetSystemMetrics(0)
 screen_height=GetSystemMetrics(1)
 screen=pygame.display.set_mode([screen_width, screen_height])
 
-#Spieler
-SPIELER_DURCHMESSER_Y = 100
-SPIELER_DURCHMESSER_X = 10
+#Rects
+player1 = pygame.Rect(10, screen_height/2 - 70, 10 , 140)
+player2 = pygame.Rect(screen_width - 20, screen_height/2 -70, 10 , 140)
+ball = pygame.Rect(screen_width/2 -20, screen_height/2 -20, 20, 20)
 
-spieler1pos_x = 20
-spieler1pos_y = screen_height/2
+#Movement
 
-spieler2pos_x = screen_width-20-SPIELER_DURCHMESSER_X
-spieler2pos_y = screen_height/2
+ball_speedx = 4
+ball_speedy = 4
+player1_speed = 0
 
-spielerbewegung_y = 5
+#Ball Animation
+def ball_animation():
+    global ball_speedx, ball_speedy
+    ball.x += ball_speedx
+    ball.y += ball_speedy
 
-spielfigur_1_bewegung = 0
+    if ball.top <= 0 or ball.bottom >= screen_height:
+        ball_speedy *= -1
 
-#Ball
-BALL_DURCHMESSER = 20
+    if ball.left <= 0 or ball.right >= screen_width:
+        ball_speedx *= -1
 
-ballpos_x = 10
-ballpos_y = screen_height/2
+    if ball.colliderect(player1) or ball.colliderect(player2
+):
+        ball_speedx *= -1
 
-ball_bewegung_x = 4
-ball_bewegung_y = 4
+
 
 #Create Spieler Array
 spieler_array = []
@@ -52,60 +57,42 @@ spieler_array = []
 while spielaktiv:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            spielaktiv = False
+            pygame.quit()
+            sys.exit()
+
         if event.type == pygame.KEYDOWN:
-            print("Spieler hat Taste gedrückt")
-
             if event.key == pygame.K_ESCAPE:
-                print("Spieler hat ESC runter gedrückt")
-                spielaktiv = False
-                
-            # Taste für Spieler 1
+                    spielaktiv = False
+            if event.key == pygame.K_DOWN:
+                 player1_speed += 6
             if event.key == pygame.K_UP:
-                print("Spieler hat Pfeiltaste runter gedrückt")
-                spielfigur_1_bewegung = -6
-            elif event.key == pygame.K_DOWN:
-                print("Spieler hat Pfeiltaste runter gedrückt")
-                spielfigur_1_bewegung = 6
-
+                 player1_speed -= 6
         if event.type == pygame.KEYUP:
-            print("Spieler hat Taste losgelassen")
+            if event.key == pygame.K_DOWN:
+                 player1_speed -= 6
+            if event.key == pygame.K_UP:
+                 player1_speed += 6
 
-            # Tasten für Spieler 1
-            if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                print("Spieler 1 stoppt bewegung")
-                spielfigur_1_bewegung = 0
+        
+    ball_animation()
+    # if player1_speed!= 0 :
+    #     player1[1] += player1_speed
+    
+    player1.y += player1_speed
+    if player1.top <= 0:
+        player1.top = 0
+    if player1.bottom >= screen_height:
+        player1.bottom = screen_height  
 
-    # Spiellogik
-    if spielfigur_1_bewegung != 0:
-        spieler1pos_y += spielfigur_1_bewegung
-
+    #Visual
     screen.fill(SCHWARZ)
-
-    #Draw Ball
-    pygame.draw.ellipse(screen, WEISS, [ballpos_x, ballpos_y, BALL_DURCHMESSER, BALL_DURCHMESSER])
-
-    #Draw Players
-    pygame.draw.rect(screen, WEISS,[spieler1pos_x, spieler1pos_y, SPIELER_DURCHMESSER_X, SPIELER_DURCHMESSER_Y ])
-    pygame.draw.rect(screen, WEISS,[spieler2pos_x, spieler2pos_y, SPIELER_DURCHMESSER_X, SPIELER_DURCHMESSER_Y])
-
-    #Balllogic
-    ballpos_x += ball_bewegung_x
-    ballpos_y += ball_bewegung_y
+    pygame.draw.ellipse(screen, WEISS, ball)
+    pygame.draw.rect(screen, WEISS, player1)
+    pygame.draw.rect(screen, WEISS, player2
+)
 
     
-    if ballpos_y > screen_height - BALL_DURCHMESSER or ballpos_y < 0:
-        ball_bewegung_y = ball_bewegung_y * -1
-
-    if ballpos_x > screen_width - BALL_DURCHMESSER or ballpos_x < 0:
-        ball_bewegung_x = ball_bewegung_x * -1
-    
-    #Kollisionslogik
-    if ballpos_y >= spieler1pos_y and ballpos_y <= spieler1pos_y + SPIELER_DURCHMESSER_Y and ballpos_x - BALL_DURCHMESSER/2 <= spieler1pos_x + SPIELER_DURCHMESSER_X:
-        ball_bewegung_x = ball_bewegung_x * -1
-    
-
+   
+    #Update
     pygame.display.flip()
     clock.tick(60)
-pygame.quit()
-quit()
