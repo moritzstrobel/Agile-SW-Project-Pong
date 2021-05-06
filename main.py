@@ -35,28 +35,39 @@ powerup = pygame.Rect(0, 0, 20, 20)
 
 
 #PoerupRando
+punishedPlayer = 0
+punishedOpponent = 0
+punishedBalls = 0
 
-def pukleinergroesser():
+def puballschneller(whotopunish):
+    global punishedPlayer, punishedBalls
     #logic fuer die Groessenaenderung bei Powerup
 
-def puschnellerlangsam():
+
+def puschnellerlangsam(whotopunish):
+    global punishedPlayer, punishedBalls
     #logic fuer die Schnelligkeit bei Powerup
+    if whotopunish == 1:
+        punishedPlayer = -4
+        punishedOpponent = 0
 
-def powerupPicker():
-    which = random.choice((0,1))
+    if whotopunish == 0:
+        punishedPlayer = 0
+        punishedOpponent = 4
 
-    if which == 0:
-        pukleinergroesser()
+def powerupPicker(whotopunish):
+    if whotopunish == 1:
+        puschnellerlangsam(1)
 
-    if which == 1:
-        puschnellerlangsam()
+    if whotopunish == 0:
+        puschnellerlangsam(0)
 
 #Movement
 
 ball_speedx = 4 * random.choice((1, -1))
 ball_speedy = 4 * random.choice((1, -1))
 player1_speed = 0
-opponent_speed = 0
+opponent_speed = 10 + punishedOpponent
 
 #Score
 player_score = 0
@@ -67,18 +78,20 @@ game_font = pygame.font.Font("freesansbold.ttf", 32)
 #Animation
 
 def ball_animation():
-    global ball_speedx, ball_speedy, opponent_score, player_score
-    ball.x += ball_speedx
-    ball.y += ball_speedy
+    global ball_speedx, ball_speedy, opponent_score, player_score, punishedBalls
+    ball.x += ball_speedx + punishedBalls
+    ball.y += ball_speedy + punishedBalls
 
     if ball.colliderect(wand1) or ball.colliderect(wand2):
-        ball_speedy *= -1
+        ball_speedy *= -1 
 
     if ball.left <= 0 or ball.right >= screen_width:
         if ball.left <= 0:
             player_score += 1
+            powerupPicker(0)
         if ball.right >= screen_width:
             opponent_score += 1
+            powerupPicker(1)
         ball_restart()
 
     if ball.colliderect(player1) or ball.colliderect(opponent):
@@ -87,9 +100,9 @@ def ball_animation():
 def player_animation():
     player1.y += player1_speed
     if player1.top <= wand1[3]:
-        player1.top = 0
+        player1.top = wand1[3]
     if player1.bottom >= screen_height - wand2[3]:
-        player1.bottom = screen_height
+        player1.bottom = screen_height - wand2[3]
        
 
 def opponent_ai():
@@ -149,10 +162,10 @@ while spielaktiv:
     pygame.draw.rect(screen, WEISS, wand2)
     pygame.draw.aaline(screen, WEISS, (screen_width / 2, 0), (screen_width / 2, screen_height))
 
-    player_text = game_font.render(str(player_score), False, WEISS)
+    player_text = game_font.render(str(player_score) + "  ", False, WEISS)
     screen.blit(player_text, (screen_width/2 +10, screen_height/2))
 
-    opponent_text = game_font.render(str(opponent_score), False, WEISS)
+    opponent_text = game_font.render(str(opponent_score) + "  ", False, WEISS)
     screen.blit(opponent_text, (screen_width/2 -25, screen_height/2))
 
 
