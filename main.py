@@ -1,6 +1,7 @@
 import pygame, math
 from win32api import GetSystemMetrics
 
+
 pygame.init()
 
 #Farben [idk warum hier?]
@@ -23,7 +24,7 @@ screen_height=GetSystemMetrics(1)
 screen=pygame.display.set_mode([screen_width, screen_height])
 
 #Spieler
-SPIELER_DURCHMESSER_Y = 50
+SPIELER_DURCHMESSER_Y = 100
 SPIELER_DURCHMESSER_X = 10
 
 spieler1pos_x = 20
@@ -44,6 +45,9 @@ ballpos_y = screen_height/2
 
 ball_bewegung_x = 4
 ball_bewegung_y = 4
+
+#Create Spieler Array
+spieler_array = []
 
 while spielaktiv:
     for event in pygame.event.get():
@@ -94,6 +98,10 @@ while spielaktiv:
         ball_bewegung_y = ball_bewegung_y * -1
 
     if ballpos_x > screen_width - BALL_DURCHMESSER or ballpos_x < 0:
+        ball_bewegung_x = ball_bewegung_x * -1
+    
+    #Kollisionslogik
+    if ballpos_y >= spieler1pos_y and ballpos_y <= spieler1pos_y + SPIELER_DURCHMESSER_Y and ballpos_x - BALL_DURCHMESSER/2 <= spieler1pos_x + SPIELER_DURCHMESSER_X:
         ball_bewegung_x = ball_bewegung_x * -1
     
 
