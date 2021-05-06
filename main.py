@@ -67,13 +67,13 @@ def powerupPicker(whotopunish):
 ball_speedx = 4 * random.choice((1, -1))
 ball_speedy = 4 * random.choice((1, -1))
 player1_speed = 0
-opponent_speed = 10 + punishedOpponent
+opponent_speed = 11 + punishedOpponent
 
 #Score
 player_score = 0
 opponent_score = 0
 
-game_font = pygame.font.Font("freesansbold.ttf", 32)
+game_font = pygame.font.SysFont("freesansbold.TTF", 32)
 
 #Animation
 
@@ -156,17 +156,20 @@ while spielaktiv:
     #Visual
     screen.fill(SCHWARZ)
     pygame.draw.ellipse(screen, WEISS, ball)
-    pygame.draw.rect(screen, WEISS, player1)
-    pygame.draw.rect(screen, WEISS, opponent)
-    pygame.draw.rect(screen, WEISS, wand1)
-    pygame.draw.rect(screen, WEISS, wand2)
-    pygame.draw.aaline(screen, WEISS, (screen_width / 2, 0), (screen_width / 2, screen_height))
+    pygame.draw.rect(screen, "#3B50BF", player1)
+    pygame.draw.rect(screen, "#E62C27", opponent)
+    pygame.draw.rect(screen, "#555455", wand1)
+    pygame.draw.rect(screen, "#555455", wand2)
+    pygame.draw.aaline(screen, "#555455", (screen_width / 2, 0), (screen_width / 2, screen_height))
 
-    player_text = game_font.render(str(player_score) + "  ", False, WEISS)
-    screen.blit(player_text, (screen_width/2 +10, screen_height/2))
+   
 
-    opponent_text = game_font.render(str(opponent_score) + "  ", False, WEISS)
-    screen.blit(opponent_text, (screen_width/2 -25, screen_height/2))
+    player_text = game_font.render(str(player_score) + "  ", False, "#3B50BF")
+    screen.blit(player_text, (screen_width/2 + player_text.get_width(), screen_height/2))
+
+    opponent_text = game_font.render(str(opponent_score) + "  ", False, "#E62C27")
+    screen.blit(opponent_text, (screen_width/2 - opponent_text.get_width()*1.5, screen_height/2))
+
 
 
    
